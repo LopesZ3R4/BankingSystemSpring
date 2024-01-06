@@ -15,11 +15,3 @@ spring:
      naming:
        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-   flyway:
-     baseline-on-migrate: false
-     url: jdbc:mariadb://localhost:3306/bssdb
-     user: bssuser
-     password: secret
-     locations: classpath:db/migration
-     driver-class-name: org.mariadb.jdbc.Driver
-     enabled: true
