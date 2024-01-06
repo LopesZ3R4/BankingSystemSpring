@@ -6,12 +6,14 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Entity
 @Table(name = "Accounts")
 public class UserAccountEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AccountID")
     private UUID accountId;
     @Column(name = "ChavePix", nullable = false)
@@ -23,9 +25,11 @@ public class UserAccountEntity {
     @Column(name = "Balance", nullable = false)
     private BigDecimal balance;
 
+    @CreationTimestamp
     @Column(name = "CreatedAt", updatable = false)
     private Timestamp createdAt;
 
+    @UpdateTimestamp
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
 

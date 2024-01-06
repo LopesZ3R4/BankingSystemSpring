@@ -10,15 +10,15 @@ import java.util.UUID;
 @Service
 public class UserAccountService {
 
-   private final UserAccountRepository userAccountRepository;
+    private final UserAccountRepository userAccountRepository;
 
-   @Autowired
-   public UserAccountService(UserAccountRepository userAccountRepository) {
-       this.userAccountRepository = userAccountRepository;
-   }
+    @Autowired
+    public UserAccountService(UserAccountRepository userAccountRepository) {
+        this.userAccountRepository = userAccountRepository;
+    }
 
-   public UserAccountEntity createUserAccount(UserAccountEntity userAccount) {
-       userAccount.setAccountId(UUID.randomUUID());
-       return userAccountRepository.save(userAccount);
-   }
+    public UserAccountEntity createUserAccount(UserAccountEntity userAccount) {
+        userAccount.setAccountId(UUID.randomUUID());
+        return userAccountRepository.save(userAccount);
+    }
 }
