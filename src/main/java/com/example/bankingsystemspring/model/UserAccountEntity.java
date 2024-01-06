@@ -17,9 +17,6 @@ public class UserAccountEntity {
     @Column(name = "ChavePix", nullable = false)
     private String chavePix;
 
-    @Column(name = "AccountNumber", unique = true, nullable = false)
-    private String accountNumber;
-
     @Column(name = "AccountHolderName", nullable = false)
     private String accountHolderName;
 
@@ -36,9 +33,8 @@ public class UserAccountEntity {
         return accountId;
     }
 
-    public UserAccountEntity setAccountId(UUID accountId) {
+    public void setAccountId(UUID accountId) {
         this.accountId = accountId;
-        return this;
     }
 
     public String getChavePix() {
@@ -50,31 +46,20 @@ public class UserAccountEntity {
         return this;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public UserAccountEntity setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-        return this;
-    }
-
     public String getAccountHolderName() {
         return accountHolderName;
     }
 
-    public UserAccountEntity setAccountHolderName(String accountHolderName) {
+    public void setAccountHolderName(String accountHolderName) {
         this.accountHolderName = accountHolderName;
-        return this;
     }
 
     public BigDecimal getBalance() {
         return balance;
     }
 
-    public UserAccountEntity setBalance(BigDecimal balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
-        return this;
     }
 
     public Timestamp getCreatedAt() {
