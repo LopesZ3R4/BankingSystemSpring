@@ -9,9 +9,12 @@ import com.example.bankingsystemspring.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AccountTransactionService {
@@ -43,10 +46,14 @@ public class AccountTransactionService {
 
        return accountTransactionRepository.save(newTransaction);
    }
+    public List<AccountTransactionsEntity> getTransactionsByAccount(UserAccountEntity account) {
+        List<AccountTransactionsEntity> transactionsFromAccount = accountTransactionRepository.findByAccount(account);
+        List<AccountTransactionsEntity> transactionsToAccount = accountTransactionRepository.findByDestinationAccount(account);
 
-   public List<AccountTransactionsEntity> getAllTransactions() {
-       return accountTransactionRepository.findAll();
-   }
+        return Stream.concat(transactionsFromAccount.stream(), transactionsToAccount.stream())
+                .sorted(Comparator.comparing(AccountTransactionsEntity::getTransactionDate))
+                .collect(Collectors.toList());
+    }
 
    public AccountTransactionsEntity getTransactionById(UUID id) {
        return accountTransactionRepository.findById(id).orElse(null);

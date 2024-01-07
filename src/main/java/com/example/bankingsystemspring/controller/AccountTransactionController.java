@@ -41,11 +41,6 @@ public class AccountTransactionController {
         this.mapper = mapper;
     }
 
-    @GetMapping
-    public ResponseEntity<List<AccountTransactionsEntity>> getAllTransactions() {
-        return ResponseEntity.ok(accountTransactionService.getAllTransactions());
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTransactionById(@PathVariable UUID id) {
         Optional<AccountTransactionsEntity> transaction = Optional
