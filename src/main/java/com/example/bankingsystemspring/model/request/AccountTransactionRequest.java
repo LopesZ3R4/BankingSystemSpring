@@ -7,6 +7,7 @@ public class AccountTransactionRequest {
     private UUID accountId;
     private BigDecimal amount;
     private String chavePix;
+    public AccountTransactionRequest(){}
 
     public AccountTransactionRequest(UUID accountId, BigDecimal amount, String chavePix) {
         this.accountId = accountId;

@@ -7,11 +7,12 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 public class AccountTransactionResponse {
-    final private UUID transactionId;
-    final private Timestamp transactionDate;
-    final private TransactionType transactionType;
-    final private BigDecimal amount;
-    final private BigDecimal balance;
+    private UUID transactionId;
+    private Timestamp transactionDate;
+    private TransactionType transactionType;
+    private BigDecimal amount;
+    private BigDecimal balance;
+    public AccountTransactionResponse(){}
 
     public AccountTransactionResponse(UUID transactionId, Timestamp transactionDate, TransactionType transactionType, BigDecimal amount, BigDecimal balance) {
         this.transactionId = transactionId;
