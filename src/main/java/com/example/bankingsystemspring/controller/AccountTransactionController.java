@@ -45,7 +45,7 @@ public class AccountTransactionController {
         Optional<AccountTransactionsEntity> transaction = Optional
                 .ofNullable(accountTransactionService.getTransactionById(id));
         if (transaction.isEmpty()) {
-            ResponseEntity.notFound();
+            return ResponseEntity.notFound().build();
         }
         AccountTransactionResponse response = mapper.toAccountTransactionResponse(transaction.get());
         return ResponseEntity.ok(response);
@@ -139,11 +139,5 @@ public class AccountTransactionController {
         AccountTransactionResponse response = mapper.toAccountTransactionResponse(transaction);
 
         return ResponseEntity.created(URI.create(uri)).body(response);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable UUID id) {
-        accountTransactionService.deleteTransaction(id);
-        return ResponseEntity.noContent().build();
     }
 }
