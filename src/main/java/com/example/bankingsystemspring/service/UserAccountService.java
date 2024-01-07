@@ -1,6 +1,6 @@
 package com.example.bankingsystemspring.service;
 
-import com.example.bankingsystemspring.common.TransactionType;
+import com.example.bankingsystemspring.model.AccountTransactionsEntity;
 import com.example.bankingsystemspring.model.UserAccountEntity;
 import com.example.bankingsystemspring.repository.UserAccountRepository;
 import jakarta.transaction.Transactional;
@@ -25,22 +25,14 @@ public class UserAccountService {
         userAccount.setAccountId(UUID.randomUUID());
         return userAccountRepository.save(userAccount);
     }
-    public UserAccountEntity withdraw(UserAccountEntity userAccount, BigDecimal amount) {
-        if (userAccount.getBalance().compareTo(amount) < 0) {
-            return null;
-        }
-        userAccount.setBalance(userAccount.getBalance().subtract(amount));
-        userAccountRepository.save(userAccount);
-        return userAccountRepository.save(userAccount);
-     }
-    public UserAccountEntity deposit(UserAccountEntity userAccount, BigDecimal amount) {
-        userAccount.setBalance(userAccount.getBalance().add(amount));
-        return userAccountRepository.save(userAccount);
-    }
 
     @Transactional
-    public void processTransaction(UserAccountEntity originAccount, UserAccountEntity destinationAccount, TransactionType transactionType, BigDecimal amount){
-        switch (transactionType) {
+    public void processTransaction(AccountTransactionsEntity transaction){
+        UserAccountEntity originAccount = transaction.getAccount();
+        UserAccountEntity destinationAccount = transaction.getDestinationAccount();
+        BigDecimal amount = transaction.getAmount();
+
+        switch (transaction.getTransactionType()) {
             case deposit:
                 originAccount.setBalance(originAccount.getBalance().add(amount));
                 userAccountRepository.save(originAccount);
@@ -62,5 +54,8 @@ public class UserAccountService {
 
     public Optional<UserAccountEntity> findById(UUID accountId) {
         return userAccountRepository.findById(accountId);
+    }
+    public Optional<UserAccountEntity> findByPix(String chavePix) {
+        return userAccountRepository.findByChavePix(chavePix);
     }
 }

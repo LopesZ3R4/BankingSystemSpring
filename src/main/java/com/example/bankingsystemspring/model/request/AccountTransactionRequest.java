@@ -1,20 +1,21 @@
 package com.example.bankingsystemspring.model.request;
 
-import com.example.bankingsystemspring.common.TransactionType;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public class AccountTransactionRequest {
     private UUID accountId;
-    private TransactionType transactionType;
     private BigDecimal amount;
-    private UUID destinationAccountId;
+    private String chavePix;
 
-    public AccountTransactionRequest(UUID accountId, TransactionType transactionType, BigDecimal amount, UUID destinationAccountId) {
+    public AccountTransactionRequest(UUID accountId, BigDecimal amount, String chavePix) {
         this.accountId = accountId;
-        this.transactionType = transactionType;
         this.amount = amount;
-        this.destinationAccountId = destinationAccountId;
+        this.chavePix = chavePix;
+    }
+    public AccountTransactionRequest(UUID accountId, BigDecimal amount) {
+        this.accountId = accountId;
+        this.amount = amount;
     }
 
     public UUID getAccountId() {
@@ -25,14 +26,6 @@ public class AccountTransactionRequest {
         this.accountId = accountId;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
     public BigDecimal getAmount() {
         return amount;
     }
@@ -41,11 +34,12 @@ public class AccountTransactionRequest {
         this.amount = amount;
     }
 
-    public UUID getDestinationAccountId() {
-        return destinationAccountId;
+    public String getChavePix() {
+        return chavePix;
     }
 
-    public void setDestinationAccountId(UUID destinationAccountId) {
-        this.destinationAccountId = destinationAccountId;
+    public AccountTransactionRequest setChavePix(String chavePix) {
+        this.chavePix = chavePix;
+        return this;
     }
 }

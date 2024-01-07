@@ -45,50 +45,6 @@ public class UserAccountServiceTest {
     }
 
     @Test
-    void testWithdraw_SufficientBalance() {
-        UserAccountEntity userAccount = new UserAccountEntity();
-        userAccount.setAccountId(UUID.randomUUID());
-        userAccount.setBalance(new BigDecimal("100"));
-
-        BigDecimal amount = new BigDecimal("50");
-
-        when(userAccountRepository.save(any(UserAccountEntity.class))).thenReturn(userAccount);
-
-        UserAccountEntity result = userAccountService.withdraw(userAccount, amount);
-
-        assertNotNull(result);
-        assertEquals(new BigDecimal("50"), result.getBalance());
-    }
-
-    @Test
-    void testWithdraw_InsufficientBalance() {
-        UserAccountEntity userAccount = new UserAccountEntity();
-        userAccount.setAccountId(UUID.randomUUID());
-        userAccount.setBalance(new BigDecimal("50"));
-
-        BigDecimal amount = new BigDecimal("100");
-
-        UserAccountEntity result = userAccountService.withdraw(userAccount, amount);
-
-        assertNull(result);
-    }
-    @Test
-    void deposit() {
-        UserAccountEntity userAccount = random.nextObject(UserAccountEntity.class);
-        BigDecimal accountBalance = userAccount.getBalance();
-
-        BigDecimal amount = new BigDecimal("500");
-
-        when(userAccountRepository.save(any(UserAccountEntity.class))).thenReturn(userAccount);
-
-        UserAccountEntity result = userAccountService.deposit(userAccount, amount);
-        BigDecimal newBalance = accountBalance.add(amount);
-
-        assertNotNull(result);
-        assertEquals(newBalance, result.getBalance());
-    }
-
-    @Test
     void cantFindById() {
         UUID accountId = UUID.randomUUID();
         when(userAccountRepository.findById(accountId)).thenReturn(Optional.empty());

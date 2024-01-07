@@ -1,6 +1,6 @@
 package com.example.bankingsystemspring.service;
 
-import com.example.bankingsystemspring.common.TransactionType;
+import com.example.bankingsystemspring.common.enums.TransactionType;
 import com.example.bankingsystemspring.model.AccountTransactionsEntity;
 import com.example.bankingsystemspring.model.UserAccountEntity;
 import com.example.bankingsystemspring.model.request.AccountTransactionRequest;
@@ -24,19 +24,19 @@ public class AccountTransactionService {
        this.accountTransactionRepository = accountTransactionRepository;
        this.userAccountRepository = userAccountRepository;
    }
-   public AccountTransactionsEntity createAccountTransaction (AccountTransactionRequest transactionRequest) {
+   public AccountTransactionsEntity createAccountTransaction (AccountTransactionRequest transactionRequest, TransactionType transactionType) {
        UUID newTransactionID = UUID.randomUUID();
        Optional<UserAccountEntity> originAccount = userAccountRepository.findById(transactionRequest.getAccountId());
 
-       if(transactionRequest.getTransactionType() != TransactionType.deposit && transactionRequest.getAmount().compareTo(originAccount.get().getBalance()) < 0) {
+       if(transactionType != TransactionType.deposit && originAccount.get().getBalance().compareTo(transactionRequest.getAmount()) < 0) {
            return null;
        }
 
-       UserAccountEntity destinationAccount = userAccountRepository.findById(transactionRequest.getDestinationAccountId()).orElse(null);
+       UserAccountEntity destinationAccount = userAccountRepository.findByChavePix(transactionRequest.getChavePix()).orElse(null);
 
        AccountTransactionsEntity newTransaction = new AccountTransactionsEntity(newTransactionID,
                originAccount.get(),
-               transactionRequest.getTransactionType(),
+               transactionType,
                transactionRequest.getAmount(),
                destinationAccount);
 

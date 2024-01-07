@@ -17,7 +17,7 @@ public class UserAccountEntity {
     @Id
     @Column(name = "AccountID")
     private UUID accountId;
-    @Column(name = "ChavePix", nullable = false)
+    @Column(name = "ChavePix", nullable = false, unique = true)
     private String chavePix;
 
     @Column(name = "AccountHolderName", nullable = false)

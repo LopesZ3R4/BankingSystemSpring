@@ -1,5 +1,5 @@
 package com.example.bankingsystemspring.model;
-import com.example.bankingsystemspring.common.TransactionType;
+import com.example.bankingsystemspring.common.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,6 +35,8 @@ public class AccountTransactionsEntity {
     @CreationTimestamp
     @Column(name = "TransactionDate", nullable = false)
     private Timestamp transactionDate;
+    public AccountTransactionsEntity() {
+    }
     public AccountTransactionsEntity(UUID transactionId, UserAccountEntity account,
                                      TransactionType transactionType, BigDecimal amount,
                                      UserAccountEntity destinationAccount) {
