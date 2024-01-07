@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -34,7 +35,7 @@ public class AccountTransactionController {
 
     @Autowired
     public AccountTransactionController(AccountTransactionService accountTransactionService,
-                                        UserAccountService userAccountService, AccountTransactionMapper mapper) {
+            UserAccountService userAccountService, AccountTransactionMapper mapper) {
         this.accountTransactionService = accountTransactionService;
         this.userAccountService = userAccountService;
         this.mapper = mapper;
@@ -49,16 +50,25 @@ public class AccountTransactionController {
     public ResponseEntity<Object> getTransactionById(@PathVariable UUID id) {
         Optional<AccountTransactionsEntity> transaction = Optional
                 .ofNullable(accountTransactionService.getTransactionById(id));
-        if(transaction.isEmpty()){
+        if (transaction.isEmpty()) {
             ResponseEntity.notFound();
         }
-        AccountTransactionResponse response;
-        if(transaction.get().getTransactionType() == TransactionType.transfer){
-            response = mapper.toAccountTransactionTransferResponse(transaction.get());
-        } else {
-            response = mapper.toAccountTransactionResponse(transaction.get());
-        }
+        AccountTransactionResponse response = mapper.toAccountTransactionResponse(transaction.get());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<List<AccountTransactionResponse>> getTransactionsByAccount(@PathVariable UUID accountId) {
+        Optional<UserAccountEntity> userAccount = userAccountService.findById(accountId);
+
+        if (userAccount.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<AccountTransactionsEntity> transactions = accountTransactionService.getTransactionsByAccount(userAccount.get());
+        List<AccountTransactionResponse> responses = transactions.stream()
+                .map(mapper::toAccountTransactionResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping("deposit/{accountId}")
@@ -85,9 +95,10 @@ public class AccountTransactionController {
 
         return ResponseEntity.created(URI.create(uri)).body(response);
     }
+
     @PostMapping("withdraw/{accountId}")
     public ResponseEntity<AccountTransactionResponse> withdraw(@PathVariable @NotNull UUID accountId,
-                                                             @RequestBody @NotNull @Min(1) BigDecimal amount) {
+            @RequestBody @NotNull @Min(1) BigDecimal amount) {
         Optional<UserAccountEntity> originAccount = userAccountService.findById(accountId);
 
         if (originAccount.isEmpty()) {
@@ -111,7 +122,7 @@ public class AccountTransactionController {
     }
 
     @PostMapping("transfer")
-    public ResponseEntity<AccountTransactionTransferResponse> Transaction(
+    public ResponseEntity<AccountTransactionResponse> Transaction(
             @RequestBody AccountTransactionRequest transactionRequest) {
         Optional<UserAccountEntity> originAccount = userAccountService.findById(transactionRequest.getAccountId());
         Optional<UserAccountEntity> destinationAccount = userAccountService.findByPix(transactionRequest.getChavePix());
@@ -119,7 +130,9 @@ public class AccountTransactionController {
         if (originAccount.isEmpty() || destinationAccount.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
+        if (originAccount.get().getAccountId().equals(destinationAccount.get().getAccountId())){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         AccountTransactionsEntity transaction = accountTransactionService.createAccountTransaction(transactionRequest,
                 TransactionType.transfer);
 
@@ -129,7 +142,7 @@ public class AccountTransactionController {
         userAccountService.processTransaction(transaction);
 
         String uri = String.format("transactions/%s", transaction.getTransactionId());
-        AccountTransactionTransferResponse response = mapper.toAccountTransactionTransferResponse(transaction);
+        AccountTransactionResponse response = mapper.toAccountTransactionResponse(transaction);
 
         return ResponseEntity.created(URI.create(uri)).body(response);
     }
