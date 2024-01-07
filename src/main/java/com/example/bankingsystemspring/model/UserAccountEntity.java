@@ -24,7 +24,7 @@ public class UserAccountEntity {
     private String accountHolderName;
 
     @Column(name = "Balance", nullable = false)
-    @Min(0)
+    @Min(1)
     private BigDecimal balance;
 
     @CreationTimestamp
