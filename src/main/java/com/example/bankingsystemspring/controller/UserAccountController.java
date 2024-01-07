@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 @Validated
@@ -26,8 +27,10 @@ public class UserAccountController {
     }
 
     @PostMapping
-    public UserAccountEntity createUserAccount(@RequestBody UserAccountEntity userAccount) {
-        return userAccountService.createUserAccount(userAccount);
+    public ResponseEntity<UserAccountEntity> createUserAccount(@RequestBody UserAccountEntity userAccountRequest) {
+        UserAccountEntity userAccount = userAccountService.createUserAccount(userAccountRequest);
+        String uri = String.format("assettransactions/%s",userAccount.getAccountId());
+        return ResponseEntity.created(URI.create(uri)).body(userAccount);
     }
     @PostMapping(value = "deposit/{accountId}")
     public ResponseEntity<Object> deposit(@PathVariable @NotNull UUID accountId,@RequestBody @NotNull @Min(1) BigDecimal amount) {
