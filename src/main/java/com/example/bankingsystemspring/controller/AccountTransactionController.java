@@ -6,7 +6,6 @@ import com.example.bankingsystemspring.model.AccountTransactionsEntity;
 import com.example.bankingsystemspring.model.UserAccountEntity;
 import com.example.bankingsystemspring.model.request.AccountTransactionRequest;
 import com.example.bankingsystemspring.model.response.AccountTransactionResponse;
-import com.example.bankingsystemspring.model.response.AccountTransactionTransferResponse;
 import com.example.bankingsystemspring.service.AccountTransactionService;
 import com.example.bankingsystemspring.service.UserAccountService;
 import jakarta.validation.constraints.Min;
