@@ -1,4 +1,4 @@
-package com.example.bankingsystemspring.common;
+package com.example.bankingsystemspring.common.enums;
 
 public enum TransactionType {
     deposit,
