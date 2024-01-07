@@ -32,9 +32,6 @@ public class UserAccountService {
         return userAccountRepository.save(userAccount);
      }
     public UserAccountEntity deposit(UserAccountEntity userAccount, BigDecimal amount) {
-        if (userAccount.getBalance().compareTo(amount) < 0) {
-            return null;
-        }
         userAccount.setBalance(userAccount.getBalance().add(amount));
         return userAccountRepository.save(userAccount);
     }
