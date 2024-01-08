@@ -17,14 +17,14 @@ public class UserAccountEntity {
     @Id
     @Column(name = "AccountID")
     private UUID accountId;
-    @Column(name = "ChavePix", nullable = false)
+    @Column(name = "ChavePix", nullable = false, unique = true)
     private String chavePix;
 
     @Column(name = "AccountHolderName", nullable = false)
     private String accountHolderName;
 
     @Column(name = "Balance", nullable = false)
-    @Min(0)
+    @Min(1)
     private BigDecimal balance;
 
     @CreationTimestamp

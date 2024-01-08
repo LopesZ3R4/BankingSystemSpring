@@ -1,7 +1,9 @@
 package com.example.bankingsystemspring.service;
 
+import com.example.bankingsystemspring.model.AccountTransactionsEntity;
 import com.example.bankingsystemspring.model.UserAccountEntity;
 import com.example.bankingsystemspring.repository.UserAccountRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +25,37 @@ public class UserAccountService {
         userAccount.setAccountId(UUID.randomUUID());
         return userAccountRepository.save(userAccount);
     }
-    public UserAccountEntity withdraw(UserAccountEntity userAccount, BigDecimal amount) {
-        if (userAccount.getBalance().compareTo(amount) < 0) {
-            return null;
+
+    @Transactional
+    public void processTransaction(AccountTransactionsEntity transaction){
+        UserAccountEntity originAccount = transaction.getAccount();
+        UserAccountEntity destinationAccount = transaction.getDestinationAccount();
+        BigDecimal amount = transaction.getAmount();
+
+        switch (transaction.getTransactionType()) {
+            case deposit:
+                originAccount.setBalance(originAccount.getBalance().add(amount));
+                userAccountRepository.save(originAccount);
+                return;
+            case withdraw:
+                originAccount.setBalance(originAccount.getBalance().subtract(amount));
+                userAccountRepository.save(originAccount);
+                return;
+            case transfer:
+                originAccount.setBalance(originAccount.getBalance().subtract(amount));
+                destinationAccount.setBalance(destinationAccount.getBalance().add(amount));
+                userAccountRepository.save(destinationAccount);
+                userAccountRepository.save(originAccount);
+                return;
+            default:
+                throw new IllegalArgumentException("Invalid transaction type");
         }
-        userAccount.setBalance(userAccount.getBalance().subtract(amount));
-        userAccountRepository.save(userAccount);
-        return userAccountRepository.save(userAccount);
-     }
-    public UserAccountEntity deposit(UserAccountEntity userAccount, BigDecimal amount) {
-        userAccount.setBalance(userAccount.getBalance().add(amount));
-        return userAccountRepository.save(userAccount);
     }
 
     public Optional<UserAccountEntity> findById(UUID accountId) {
         return userAccountRepository.findById(accountId);
+    }
+    public Optional<UserAccountEntity> findByPix(String chavePix) {
+        return userAccountRepository.findByChavePix(chavePix);
     }
 }

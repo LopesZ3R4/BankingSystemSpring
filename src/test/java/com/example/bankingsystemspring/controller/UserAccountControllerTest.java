@@ -13,10 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,61 +59,5 @@ class UserAccountControllerTest {
                 .andExpect(jsonPath("$.accountHolderName").value(request.getAccountHolderName()))
                 .andExpect(jsonPath("$.balance").value(request.getBalance()));
         Mockito.verify(userAccountService, Mockito.times(1)).createUserAccount(any(UserAccountEntity.class));
-    }
-
-    @Test
-    void deposit() throws Exception {
-        UUID accountId = UUID.randomUUID();
-        BigDecimal amount = BigDecimal.valueOf(100);
-        UserAccountEntity userAccount = new UserAccountEntity();
-        userAccount.setAccountId(accountId);
-        userAccount.setBalance(BigDecimal.ZERO.add(amount));
-
-        Mockito.when(userAccountService.findById(accountId)).thenReturn(Optional.of(userAccount));
-        Mockito.when(userAccountService.deposit(userAccount, amount)).thenReturn(userAccount);
-
-        mockMvc.perform(post("/api/useraccount/deposit/" + accountId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(String.valueOf(amount)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.balance").value(amount));
-        Mockito.verify(userAccountService, Mockito.times(1)).findById(any(UUID.class));
-        Mockito.verify(userAccountService, Mockito.times(1)).deposit(any(UserAccountEntity.class),
-                any(BigDecimal.class));
-    }
-
-    @Test
-    void depositNegativeAmount() throws Exception {
-        UUID accountId = UUID.randomUUID();
-        BigDecimal amount = BigDecimal.valueOf(-100);
-
-        mockMvc.perform(post("/api/useraccount/deposit/" + accountId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(String.valueOf(amount)))
-                .andExpect(status().isUnprocessableEntity());
-        Mockito.verify(userAccountService, Mockito.times(0)).findById(any(UUID.class));
-        Mockito.verify(userAccountService, Mockito.times(0)).deposit(any(UserAccountEntity.class),
-                any(BigDecimal.class));
-    }
-
-    @Test
-    void depositNonExistentAccount() throws Exception {
-        UUID accountId = UUID.randomUUID();
-        BigDecimal amount = BigDecimal.valueOf(100);
-
-        Mockito.when(userAccountService.findById(accountId)).thenReturn(Optional.empty());
-
-        mockMvc.perform(post("/api/useraccount/deposit/" + accountId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(String.valueOf(amount)))
-                .andExpect(status().isNotFound());
-
-        Mockito.verify(userAccountService, Mockito.times(1)).findById(any(UUID.class));
-        Mockito.verify(userAccountService, Mockito.times(0)).deposit(any(UserAccountEntity.class),
-                any(BigDecimal.class));
-    }
-
-    @Test
-    void withdraw() {
     }
 }
