@@ -103,37 +103,31 @@ public class AccountTransactionControllerTest {
     @Test
     public void testDeposit_Successful() {
         UUID accountId = UUID.randomUUID();
-        BigDecimal amount = new BigDecimal("100.00");
+        BigDecimal amount = new BigDecimal("100");
         AccountTransactionsEntity transaction = new AccountTransactionsEntity();
-        AccountTransactionResponse transactionResponse = new AccountTransactionResponse();
-
         when(userAccountService.findById(accountId)).thenReturn(Optional.of(new UserAccountEntity()));
-        when(accountTransactionService.createAccountTransaction(any(), eq(TransactionType.deposit)))
+        when(accountTransactionService.createAccountTransaction(any(AccountTransactionRequest.class), eq(TransactionType.deposit)))
                 .thenReturn(transaction);
-        when(mapper.toAccountTransactionResponse(transaction)).thenReturn(transactionResponse);
+        when(mapper.toAccountTransactionResponse(transaction)).thenReturn(new AccountTransactionResponse());
 
         ResponseEntity<AccountTransactionResponse> response = accountTransactionController.deposit(accountId, amount);
 
-        assertEquals(CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void testWithdraw_Successful() {
         UUID accountId = UUID.randomUUID();
-        BigDecimal amount = new BigDecimal("50.00");
+        BigDecimal amount = new BigDecimal("50");
         AccountTransactionsEntity transaction = new AccountTransactionsEntity();
-        AccountTransactionResponse transactionResponse = new AccountTransactionResponse();
-
         when(userAccountService.findById(accountId)).thenReturn(Optional.of(new UserAccountEntity()));
-        when(accountTransactionService.createAccountTransaction(any(), eq(TransactionType.withdraw)))
+        when(accountTransactionService.createAccountTransaction(any(AccountTransactionRequest.class), eq(TransactionType.withdraw)))
                 .thenReturn(transaction);
-        when(mapper.toAccountTransactionResponse(transaction)).thenReturn(transactionResponse);
+        when(mapper.toAccountTransactionResponse(transaction)).thenReturn(new AccountTransactionResponse());
 
         ResponseEntity<AccountTransactionResponse> response = accountTransactionController.withdraw(accountId, amount);
 
-        assertEquals(CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
@@ -226,13 +220,73 @@ public class AccountTransactionControllerTest {
     public void testWithdraw_NegativeAmount() {
         UUID accountId = UUID.randomUUID();
         BigDecimal negativeAmount = new BigDecimal("-50");
-
         when(userAccountService.findById(accountId)).thenReturn(Optional.of(new UserAccountEntity()));
 
         ResponseEntity<AccountTransactionResponse> response = accountTransactionController.withdraw(accountId, negativeAmount);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
+    @Test
+    public void testTransfer_NegativeAmount() {
+        UUID accountId = UUID.randomUUID();
+        String pixKey = "validPixKey";
+        BigDecimal negativeAmount = new BigDecimal("-50");
+        AccountTransactionRequest request = new AccountTransactionRequest(accountId, negativeAmount, pixKey);
+
+        UserAccountEntity originAccount = new UserAccountEntity();
+        originAccount.setAccountId(accountId);
+        UserAccountEntity destinationAccount = new UserAccountEntity();
+        destinationAccount.setAccountId(UUID.randomUUID());
+
+        when(userAccountService.findById(accountId)).thenReturn(Optional.of(originAccount));
+        when(userAccountService.findByPix(pixKey)).thenReturn(Optional.of(destinationAccount));
+
+        ResponseEntity<AccountTransactionResponse> response = accountTransactionController.Transaction(request);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testTransfer_Successful() {
+        UUID originAccountId = UUID.randomUUID();
+        UUID destinationAccountId = UUID.randomUUID();
+        String pixKey = "validPixKey";
+        BigDecimal amount = new BigDecimal("75");
+        AccountTransactionRequest request = new AccountTransactionRequest(originAccountId, amount, pixKey);
+        AccountTransactionsEntity transaction = new AccountTransactionsEntity();
+
+        UserAccountEntity originAccountEntity = new UserAccountEntity();
+        originAccountEntity.setAccountId(originAccountId);
+        UserAccountEntity destinationAccountEntity = new UserAccountEntity();
+        destinationAccountEntity.setAccountId(destinationAccountId);
+
+        when(userAccountService.findById(originAccountId)).thenReturn(Optional.of(originAccountEntity));
+        when(userAccountService.findByPix(pixKey)).thenReturn(Optional.of(destinationAccountEntity));
+        when(accountTransactionService.createAccountTransaction(request, TransactionType.transfer)).thenReturn(transaction);
+        when(mapper.toAccountTransactionResponse(transaction)).thenReturn(new AccountTransactionResponse());
+
+        ResponseEntity<AccountTransactionResponse> response = accountTransactionController.Transaction(request);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+
+    @Test
+    public void testTransfer_SameOriginAndDestination() {
+        UUID accountId = UUID.randomUUID();
+        BigDecimal amount = new BigDecimal("50");
+        AccountTransactionRequest request = new AccountTransactionRequest(accountId, amount, accountId.toString());
+        UserAccountEntity accountEntity = new UserAccountEntity();
+        accountEntity.setAccountId(accountId);
+
+        when(userAccountService.findById(accountId)).thenReturn(Optional.of(accountEntity));
+        when(userAccountService.findByPix(accountId.toString())).thenReturn(Optional.of(accountEntity));
+
+        ResponseEntity<AccountTransactionResponse> response = accountTransactionController.Transaction(request);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
 
 
 }

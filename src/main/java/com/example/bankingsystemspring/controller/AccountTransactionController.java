@@ -40,10 +40,10 @@ public class AccountTransactionController {
         this.mapper = mapper;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getTransactionById(@PathVariable UUID id) {
+    @GetMapping("/{transactionId}")
+    public ResponseEntity<Object> getTransactionById(@PathVariable UUID transactionId) {
         Optional<AccountTransactionsEntity> transaction = Optional
-                .ofNullable(accountTransactionService.getTransactionById(id));
+                .ofNullable(accountTransactionService.getTransactionById(transactionId));
         if (transaction.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
