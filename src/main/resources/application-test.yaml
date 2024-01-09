@@ -1,17 +1,14 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/bssdb
-    username: bssuser
-    password: secret
+    url: jdbc:mariadb://bakingsystemspring.cbumgymey1k8.us-east-2.rds.amazonaws.com/bssdb
+    username: admin
+    password: verysecret
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update          # Automatic database schema generation (update, create, validate, none)
-      database-platform: org.hibernate.dialect.MariaDBDialect
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.MariaDBDialect
-          show_sql: true            # Enable SQL logging for debugging
-      naming:
-        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update            # Automatic database schema generation (update, create, validate, none)
+      show-sql: true              # Enable SQL logging for debugging
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
