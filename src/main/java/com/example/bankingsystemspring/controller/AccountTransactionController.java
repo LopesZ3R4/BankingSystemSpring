@@ -2,13 +2,11 @@ package com.example.bankingsystemspring.controller;
 
 import com.example.bankingsystemspring.common.enums.TransactionType;
 import com.example.bankingsystemspring.common.mapper.AccountTransactionMapper;
-import com.example.bankingsystemspring.common.mapper.UserAccountMapper;
 import com.example.bankingsystemspring.model.AccountTransactionsEntity;
 import com.example.bankingsystemspring.model.UserAccountEntity;
 import com.example.bankingsystemspring.model.request.AccountTransactionRequest;
 import com.example.bankingsystemspring.model.response.AccountTransactionResponse;
 import com.example.bankingsystemspring.model.response.AccountTransactionSummary;
-import com.example.bankingsystemspring.model.response.UserAccountResponse;
 import com.example.bankingsystemspring.service.AccountTransactionService;
 import com.example.bankingsystemspring.service.UserAccountService;
 import jakarta.validation.constraints.Min;
