@@ -73,8 +73,7 @@ public class AccountTransactionController {
         if (originAccount.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        AccountTransactionRequest transactionRequest = new AccountTransactionRequest(originAccount.get().getAccountId(),
-                amount);
+        AccountTransactionRequest transactionRequest = new AccountTransactionRequest(originAccount.get().getAccountId(),amount);
 
         AccountTransactionsEntity transaction = accountTransactionService.createAccountTransaction(transactionRequest,
                 TransactionType.deposit);
@@ -82,10 +81,11 @@ public class AccountTransactionController {
         if (transaction == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        userAccountService.processTransaction(transaction);
 
         String uri = String.format("transactions/%s", transaction.getTransactionId());
         AccountTransactionResponse response = mapper.toAccountTransactionResponse(transaction);
+
+        response.setBalance(userAccountService.calculateBalance(originAccount.get()));
 
         return ResponseEntity.created(URI.create(uri)).body(response);
     }
@@ -98,8 +98,7 @@ public class AccountTransactionController {
         if (originAccount.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        AccountTransactionRequest transactionRequest = new AccountTransactionRequest(originAccount.get().getAccountId(),
-                amount);
+        AccountTransactionRequest transactionRequest = new AccountTransactionRequest(originAccount.get().getAccountId(),amount);
 
         AccountTransactionsEntity transaction = accountTransactionService.createAccountTransaction(transactionRequest,
                 TransactionType.withdraw);
@@ -107,10 +106,11 @@ public class AccountTransactionController {
         if (transaction == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        userAccountService.processTransaction(transaction);
 
         String uri = String.format("transactions/%s", transaction.getTransactionId());
         AccountTransactionResponse response = mapper.toAccountTransactionResponse(transaction);
+
+        response.setBalance(userAccountService.calculateBalance(originAccount.get()));
 
         return ResponseEntity.created(URI.create(uri)).body(response);
     }
@@ -133,7 +133,6 @@ public class AccountTransactionController {
         if (transaction == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        userAccountService.processTransaction(transaction);
 
         String uri = String.format("transactions/%s", transaction.getTransactionId());
         AccountTransactionResponse response = mapper.toAccountTransactionResponse(transaction);

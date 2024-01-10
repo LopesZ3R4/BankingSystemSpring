@@ -34,7 +34,6 @@ public class UserAccountServiceTest {
     void testCreateUserAccount() {
         UserAccountEntity userAccount = new UserAccountEntity();
         userAccount.setAccountId(UUID.randomUUID());
-        userAccount.setBalance(BigDecimal.ONE);
 
         when(userAccountRepository.save(any(UserAccountEntity.class))).thenReturn(userAccount);
 

@@ -47,8 +47,8 @@ class UserAccountControllerTest {
     void createUserAccount() throws Exception {
         UserAccountEntity request = setupCreateUserAccount();
 
-        String requestJson = String.format("{\"chavePix\": \"%s\", \"accountHolderName\": \"%s\", \"balance\": \"%s\"}",
-                request.getChavePix(), request.getAccountHolderName(), request.getBalance());
+        String requestJson = String.format("{\"chavePix\": \"%s\", \"accountHolderName\": \"%s\"}",
+                request.getChavePix(), request.getAccountHolderName());
 
         mockMvc.perform(post("/api/useraccount")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -56,8 +56,7 @@ class UserAccountControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountId").isNotEmpty())
                 .andExpect(jsonPath("$.chavePix").value(request.getChavePix()))
-                .andExpect(jsonPath("$.accountHolderName").value(request.getAccountHolderName()))
-                .andExpect(jsonPath("$.balance").value(request.getBalance()));
+                .andExpect(jsonPath("$.accountHolderName").value(request.getAccountHolderName()));
         Mockito.verify(userAccountService, Mockito.times(1)).createUserAccount(any(UserAccountEntity.class));
     }
 }

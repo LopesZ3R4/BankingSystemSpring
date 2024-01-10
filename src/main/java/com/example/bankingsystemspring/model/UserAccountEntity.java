@@ -23,10 +23,6 @@ public class UserAccountEntity {
     @Column(name = "AccountHolderName", nullable = false)
     private String accountHolderName;
 
-    @Column(name = "Balance", nullable = false)
-    @Min(1)
-    private BigDecimal balance;
-
     @CreationTimestamp
     @Column(name = "CreatedAt", updatable = false)
     private Timestamp createdAt;
@@ -58,14 +54,6 @@ public class UserAccountEntity {
 
     public void setAccountHolderName(String accountHolderName) {
         this.accountHolderName = accountHolderName;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
     }
 
     public Timestamp getCreatedAt() {
