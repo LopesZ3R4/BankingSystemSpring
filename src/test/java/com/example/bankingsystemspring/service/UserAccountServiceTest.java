@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,7 +33,6 @@ public class UserAccountServiceTest {
     void testCreateUserAccount() {
         UserAccountEntity userAccount = new UserAccountEntity();
         userAccount.setAccountId(UUID.randomUUID());
-        userAccount.setBalance(BigDecimal.ONE);
 
         when(userAccountRepository.save(any(UserAccountEntity.class))).thenReturn(userAccount);
 

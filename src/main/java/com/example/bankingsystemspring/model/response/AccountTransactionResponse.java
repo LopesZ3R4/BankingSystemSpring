@@ -10,14 +10,16 @@ public class AccountTransactionResponse {
     private UUID transactionId;
     private Timestamp transactionDate;
     private TransactionType transactionType;
+    private String transactionDescription;
     private BigDecimal amount;
     private BigDecimal balance;
     public AccountTransactionResponse(){}
 
-    public AccountTransactionResponse(UUID transactionId, Timestamp transactionDate, TransactionType transactionType, BigDecimal amount, BigDecimal balance) {
+    public AccountTransactionResponse(UUID transactionId, Timestamp transactionDate, TransactionType transactionType, String transactionDescription, BigDecimal amount, BigDecimal balance) {
         this.transactionId = transactionId;
         this.transactionDate = transactionDate;
         this.transactionType = transactionType;
+        this.transactionDescription = transactionDescription;
         this.amount = amount;
         this.balance = balance;
     }
@@ -40,5 +42,16 @@ public class AccountTransactionResponse {
 
     public BigDecimal getBalance() {
         return balance;
+    }
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public String getTransactionDescription() {
+        return transactionDescription;
+    }
+
+    public void setTransactionDescription(String transactionDescription) {
+        this.transactionDescription = transactionDescription;
     }
 }
