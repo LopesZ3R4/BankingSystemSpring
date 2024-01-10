@@ -10,8 +10,8 @@ public class AccountTransactionTransferResponse extends AccountTransactionRespon
     final private String destinationAccountChavePix;
     final private String destinationAccountHolderName;
 
-    public AccountTransactionTransferResponse(UUID transactionId, Timestamp transactionDate, TransactionType transactionType, BigDecimal amount, BigDecimal balance, String destinationAccountChavePix, String destinationAccountHolderName) {
-        super(transactionId, transactionDate, transactionType, amount, balance);
+    public AccountTransactionTransferResponse(UUID transactionId, Timestamp transactionDate, TransactionType transactionType, String transactionDescription, BigDecimal amount, BigDecimal balance, String destinationAccountChavePix, String destinationAccountHolderName) {
+        super(transactionId, transactionDate, transactionType, transactionDescription, amount, balance);
         this.destinationAccountChavePix = destinationAccountChavePix;
         this.destinationAccountHolderName = destinationAccountHolderName;
     }

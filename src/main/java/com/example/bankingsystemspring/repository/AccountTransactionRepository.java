@@ -11,5 +11,4 @@ import java.util.UUID;
 @Repository
 public interface AccountTransactionRepository extends JpaRepository<AccountTransactionsEntity, UUID> {
   List<AccountTransactionsEntity> findByAccount(UserAccountEntity account);
-  List<AccountTransactionsEntity> findByDestinationAccount(UserAccountEntity destinationAccount);
 }
