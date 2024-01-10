@@ -33,6 +33,12 @@ dependencies {
     testImplementation 'org.jeasy:easy-random-core:5.0.0'
 }
 
+bootJar {
+    archiveFileName = 'BankingSystemSpring.jar'
+    destinationDirectory = layout.buildDirectory.dir('libs')
+}
+
+
 tasks.named('test') {
     useJUnitPlatform()
 }
