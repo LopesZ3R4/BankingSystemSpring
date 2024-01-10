@@ -22,7 +22,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+//    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -32,6 +32,12 @@ dependencies {
     testImplementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
     testImplementation 'org.jeasy:easy-random-core:5.0.0'
 }
+
+bootJar {
+    archiveFileName = 'BankingSystemSpring.jar'
+    destinationDirectory = layout.buildDirectory.dir('libs')
+}
+
 
 tasks.named('test') {
     useJUnitPlatform()
