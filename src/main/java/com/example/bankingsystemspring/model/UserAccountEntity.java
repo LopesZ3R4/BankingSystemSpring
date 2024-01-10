@@ -2,11 +2,9 @@ package com.example.bankingsystemspring.model;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-import jakarta.validation.constraints.Min;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
