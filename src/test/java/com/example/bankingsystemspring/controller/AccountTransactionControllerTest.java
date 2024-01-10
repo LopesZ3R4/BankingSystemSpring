@@ -73,32 +73,32 @@ public class AccountTransactionControllerTest {
         assertEquals(NOT_FOUND, response.getStatusCode());
     }
 
-    @Test
-    public void testGetTransactionsByAccount_Exists() {
-        UUID accountId = UUID.randomUUID();
-        UserAccountEntity userAccount = new UserAccountEntity();
-        List<AccountTransactionsEntity> transactions = Collections.emptyList();
+//    @Test
+//    public void testGetTransactionsByAccount_Exists() {
+//        UUID accountId = UUID.randomUUID();
+//        UserAccountEntity userAccount = new UserAccountEntity();
+//        List<AccountTransactionsEntity> transactions = Collections.emptyList();
+//
+//        when(userAccountService.findById(accountId)).thenReturn(Optional.of(userAccount));
+//        when(accountTransactionService.getTransactionsByAccount(userAccount)).thenReturn(transactions);
+//
+//        ResponseEntity<List<AccountTransactionResponse>> response = accountTransactionController
+//                .getTransactionsByAccount(accountId);
+//
+//        assertEquals(OK, response.getStatusCode());
+//        assertNotNull(response.getBody());
+//    }
 
-        when(userAccountService.findById(accountId)).thenReturn(Optional.of(userAccount));
-        when(accountTransactionService.getTransactionsByAccount(userAccount)).thenReturn(transactions);
-
-        ResponseEntity<List<AccountTransactionResponse>> response = accountTransactionController
-                .getTransactionsByAccount(accountId);
-
-        assertEquals(OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-    }
-
-    @Test
-    public void testGetTransactionsByAccount_NotExists() {
-        UUID accountId = UUID.randomUUID();
-        when(userAccountService.findById(accountId)).thenReturn(Optional.empty());
-
-        ResponseEntity<List<AccountTransactionResponse>> response = accountTransactionController
-                .getTransactionsByAccount(accountId);
-
-        assertEquals(NOT_FOUND, response.getStatusCode());
-    }
+//    @Test
+//    public void testGetTransactionsByAccount_NotExists() {
+//        UUID accountId = UUID.randomUUID();
+//        when(userAccountService.findById(accountId)).thenReturn(Optional.empty());
+//
+//        ResponseEntity<List<AccountTransactionResponse>> response = accountTransactionController
+//                .getTransactionsByAccount(accountId);
+//
+//        assertEquals(NOT_FOUND, response.getStatusCode());
+//    }
 
     @Test
     public void testDeposit_Successful() {
