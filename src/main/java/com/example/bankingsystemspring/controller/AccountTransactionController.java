@@ -12,6 +12,7 @@ import com.example.bankingsystemspring.service.UserAccountService;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,13 +54,19 @@ public class AccountTransactionController {
     }
 
     @GetMapping("/account/{accountId}")
-    public ResponseEntity<AccountTransactionSummary> getTransactionsByAccount(@PathVariable UUID accountId) {
+    public ResponseEntity<AccountTransactionSummary> getTransactionsByAccount(@PathVariable UUID accountId,
+                                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+        if (startDate == null && endDate != null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         Optional<UserAccountEntity> userAccount = userAccountService.findById(accountId);
 
         if (userAccount.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<AccountTransactionResponse> transactions = accountTransactionService.getTransactionsByAccount(userAccount.get())
+        List<AccountTransactionResponse> transactions = accountTransactionService.getTransactionsByAccountAndPeriod(userAccount.get(),startDate,endDate)
                 .stream()
                 .map(accountTransactionMapper::toAccountTransactionResponse)
                 .toList();

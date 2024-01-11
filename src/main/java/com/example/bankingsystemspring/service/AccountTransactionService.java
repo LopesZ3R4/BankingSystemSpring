@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,6 +65,21 @@ public class AccountTransactionService {
 
     public List<AccountTransactionsEntity> getTransactionsByAccount(UserAccountEntity account) {
         List<AccountTransactionsEntity> transactionsFromAccount = accountTransactionRepository.findByAccount(account);
+
+        return transactionsFromAccount.stream()
+                .sorted(Comparator.comparing(AccountTransactionsEntity::getTransactionDate).reversed())
+                .collect(Collectors.toList());
+    }
+    public List<AccountTransactionsEntity> getTransactionsByAccountAndPeriod(UserAccountEntity account, Date startDate, Date endDate) {
+        if (startDate == null)
+        {
+            startDate = account.getCreatedAt();
+        }
+
+        if (endDate == null){
+            endDate = Date.from(Instant.now());
+        }
+        List<AccountTransactionsEntity> transactionsFromAccount = accountTransactionRepository.findByAccountAndPeriod(account.getAccountId(),startDate,endDate);
 
         return transactionsFromAccount.stream()
                 .sorted(Comparator.comparing(AccountTransactionsEntity::getTransactionDate).reversed())
