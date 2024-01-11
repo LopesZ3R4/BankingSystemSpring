@@ -9,6 +9,7 @@ import com.example.bankingsystemspring.model.response.AccountTransactionResponse
 import com.example.bankingsystemspring.model.response.AccountTransactionSummary;
 import com.example.bankingsystemspring.service.AccountTransactionService;
 import com.example.bankingsystemspring.service.UserAccountService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Validated
+@Tag(name = "Transações", description = "Operações de Saque, Depósito, Transferencia entre contas e Extrato")
 @RestController
 @RequestMapping("/api/transactions")
 public class AccountTransactionController {
