@@ -4,6 +4,7 @@ import com.example.bankingsystemspring.common.mapper.UserAccountMapper;
 import com.example.bankingsystemspring.model.UserAccountEntity;
 import com.example.bankingsystemspring.model.response.UserAccountResponse;
 import com.example.bankingsystemspring.service.UserAccountService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Validated
+@Tag(name = "Contas", description = "Operações de Cadastro e Consulta de Contas")
 @RestController
 @RequestMapping("/api/useraccount")
 public class UserAccountController {
