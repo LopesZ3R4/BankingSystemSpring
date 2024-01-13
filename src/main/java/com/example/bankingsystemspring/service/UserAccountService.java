@@ -1,9 +1,9 @@
 package com.example.bankingsystemspring.service;
 
-import com.example.bankingsystemspring.model.AccountTransactionsEntity;
+import com.example.bankingsystemspring.common.enums.TransactionType;
 import com.example.bankingsystemspring.model.UserAccountEntity;
+import com.example.bankingsystemspring.repository.AccountTransactionRepository;
 import com.example.bankingsystemspring.repository.UserAccountRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,12 @@ import java.util.UUID;
 public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
+    private final AccountTransactionRepository transactionRepository;
 
     @Autowired
-    public UserAccountService(UserAccountRepository userAccountRepository) {
+    public UserAccountService(UserAccountRepository userAccountRepository, AccountTransactionRepository transactionRepository) {
         this.userAccountRepository = userAccountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public UserAccountEntity createUserAccount(UserAccountEntity userAccount) {
@@ -26,36 +28,17 @@ public class UserAccountService {
         return userAccountRepository.save(userAccount);
     }
 
-    @Transactional
-    public void processTransaction(AccountTransactionsEntity transaction){
-        UserAccountEntity originAccount = transaction.getAccount();
-        UserAccountEntity destinationAccount = transaction.getDestinationAccount();
-        BigDecimal amount = transaction.getAmount();
-
-        switch (transaction.getTransactionType()) {
-            case deposit:
-                originAccount.setBalance(originAccount.getBalance().add(amount));
-                userAccountRepository.save(originAccount);
-                return;
-            case withdraw:
-                originAccount.setBalance(originAccount.getBalance().subtract(amount));
-                userAccountRepository.save(originAccount);
-                return;
-            case transfer:
-                originAccount.setBalance(originAccount.getBalance().subtract(amount));
-                destinationAccount.setBalance(destinationAccount.getBalance().add(amount));
-                userAccountRepository.save(destinationAccount);
-                userAccountRepository.save(originAccount);
-                return;
-            default:
-                throw new IllegalArgumentException("Invalid transaction type");
-        }
-    }
-
     public Optional<UserAccountEntity> findById(UUID accountId) {
         return userAccountRepository.findById(accountId);
     }
     public Optional<UserAccountEntity> findByPix(String chavePix) {
         return userAccountRepository.findByChavePix(chavePix);
+    }
+    public BigDecimal calculateBalance(UserAccountEntity account) {
+        return transactionRepository.findByAccount(account).stream()
+                .map(transaction -> transaction.getTransactionType() == TransactionType.deposit
+                        ? transaction.getAmount()
+                        : transaction.getAmount().negate())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

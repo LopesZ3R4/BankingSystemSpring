@@ -3,7 +3,7 @@ name: Build and Deploy to AWS EC2
 on:
   push:
     branches:
-      - develop  # Trigger the workflow when you push to the main branch
+      - develop
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           source: "build/libs/*.jar" 
-          target: "/home/ec2-user/BankingSystemSpring"  # The destination path on your EC2 instance
+          target: "/home/${{ secrets.USERNAME }}/BankingSystemSpring"
 
       - name: Restart Spring Boot App
         uses: appleboy/ssh-action@master

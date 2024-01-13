@@ -1,57 +1,88 @@
 package com.example.bankingsystemspring.service;
 
 import com.example.bankingsystemspring.common.enums.TransactionType;
+import com.example.bankingsystemspring.exception.InsufficientBalanceException;
 import com.example.bankingsystemspring.model.AccountTransactionsEntity;
 import com.example.bankingsystemspring.model.UserAccountEntity;
 import com.example.bankingsystemspring.model.request.AccountTransactionRequest;
 import com.example.bankingsystemspring.repository.AccountTransactionRepository;
-import com.example.bankingsystemspring.repository.UserAccountRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class AccountTransactionService {
 
    private final AccountTransactionRepository accountTransactionRepository;
-   private final UserAccountRepository userAccountRepository;
+   private final UserAccountService userAccountService;
 
    @Autowired
-   public AccountTransactionService(AccountTransactionRepository accountTransactionRepository, UserAccountRepository userAccountRepository) {
+   public AccountTransactionService(AccountTransactionRepository accountTransactionRepository, UserAccountService userAccountService) {
        this.accountTransactionRepository = accountTransactionRepository;
-       this.userAccountRepository = userAccountRepository;
+       this.userAccountService = userAccountService;
    }
-   public AccountTransactionsEntity createAccountTransaction (AccountTransactionRequest transactionRequest, TransactionType transactionType) {
-       UUID newTransactionID = UUID.randomUUID();
-       Optional<UserAccountEntity> originAccount = userAccountRepository.findById(transactionRequest.getAccountId());
+    private AccountTransactionsEntity createAndSaveTransaction(UserAccountEntity account, TransactionType transactionType, BigDecimal amount, String transactionDescription) {
+       UUID newTransactionId = UUID.randomUUID();
+       return accountTransactionRepository.save(new AccountTransactionsEntity(newTransactionId, account, transactionType, amount, transactionDescription));
+    }
+    @Transactional
+    public AccountTransactionsEntity createAccountTransaction(AccountTransactionRequest transactionRequest, TransactionType transactionType) {
+        if (transactionType == null) {
+            throw new IllegalArgumentException("Transaction type cannot be null");
+        }
 
-       if(transactionType != TransactionType.deposit && originAccount.get().getBalance().compareTo(transactionRequest.getAmount()) < 0) {
-           return null;
-       }
+        Optional<UserAccountEntity> originAccount = userAccountService.findById(transactionRequest.getAccountId());
 
-       UserAccountEntity destinationAccount = userAccountRepository.findByChavePix(transactionRequest.getChavePix()).orElse(null);
+        if(originAccount.isEmpty()){
+            throw new EntityNotFoundException("Destination account not found");
+        }
+        BigDecimal originAccountBalance = userAccountService.calculateBalance(originAccount.get());
 
-       AccountTransactionsEntity newTransaction = new AccountTransactionsEntity(newTransactionID,
-               originAccount.get(),
-               transactionType,
-               transactionRequest.getAmount(),
-               destinationAccount);
+        if(transactionType != TransactionType.deposit && originAccountBalance.compareTo(transactionRequest.getAmount()) < 0) {
+            throw new InsufficientBalanceException("Account does not have enough balance.");
+        }
 
+        if (transactionType != TransactionType.transfer) {
+            String transactionDescription = transactionType == TransactionType.deposit
+                    ? "Depósito"
+                    : "Saque";
 
-       return accountTransactionRepository.save(newTransaction);
-   }
+            return createAndSaveTransaction(originAccount.get(), transactionType, transactionRequest.getAmount(), transactionDescription);
+        }
+
+        UserAccountEntity destinationAccount = userAccountService.findByPix(transactionRequest.getChavePix())
+                .orElseThrow(() -> new EntityNotFoundException("Destination account not found"));
+
+        createAndSaveTransaction(originAccount.get(), TransactionType.withdraw, transactionRequest.getAmount(),"Transferencia para "+destinationAccount.getAccountHolderName());
+        return createAndSaveTransaction(destinationAccount, TransactionType.deposit, transactionRequest.getAmount(), "Transferencia de "+originAccount.get().getAccountHolderName());
+    }
+
     public List<AccountTransactionsEntity> getTransactionsByAccount(UserAccountEntity account) {
         List<AccountTransactionsEntity> transactionsFromAccount = accountTransactionRepository.findByAccount(account);
-        List<AccountTransactionsEntity> transactionsToAccount = accountTransactionRepository.findByDestinationAccount(account);
 
-        return Stream.concat(transactionsFromAccount.stream(), transactionsToAccount.stream())
-                .sorted(Comparator.comparing(AccountTransactionsEntity::getTransactionDate))
+        return transactionsFromAccount.stream()
+                .sorted(Comparator.comparing(AccountTransactionsEntity::getTransactionDate).reversed())
+                .collect(Collectors.toList());
+    }
+    public List<AccountTransactionsEntity> getTransactionsByAccountAndPeriod(UserAccountEntity account, Date startDate, Date endDate) {
+        if (startDate == null)
+        {
+            startDate = account.getCreatedAt();
+        }
+
+        if (endDate == null){
+            endDate = Date.from(Instant.now());
+        }
+        List<AccountTransactionsEntity> transactionsFromAccount = accountTransactionRepository.findByAccountAndPeriod(account.getAccountId(),startDate,endDate);
+
+        return transactionsFromAccount.stream()
+                .sorted(Comparator.comparing(AccountTransactionsEntity::getTransactionDate).reversed())
                 .collect(Collectors.toList());
     }
 

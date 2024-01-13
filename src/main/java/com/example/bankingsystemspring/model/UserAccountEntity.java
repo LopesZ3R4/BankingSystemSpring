@@ -2,11 +2,9 @@ package com.example.bankingsystemspring.model;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-import jakarta.validation.constraints.Min;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,10 +20,6 @@ public class UserAccountEntity {
 
     @Column(name = "AccountHolderName", nullable = false)
     private String accountHolderName;
-
-    @Column(name = "Balance", nullable = false)
-    @Min(1)
-    private BigDecimal balance;
 
     @CreationTimestamp
     @Column(name = "CreatedAt", updatable = false)
@@ -58,14 +52,6 @@ public class UserAccountEntity {
 
     public void setAccountHolderName(String accountHolderName) {
         this.accountHolderName = accountHolderName;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
     }
 
     public Timestamp getCreatedAt() {

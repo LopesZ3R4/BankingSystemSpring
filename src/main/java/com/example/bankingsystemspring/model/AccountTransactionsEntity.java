@@ -28,23 +28,21 @@ public class AccountTransactionsEntity {
     @Column(name = "Amount", nullable = false)
     private BigDecimal amount;
 
-    @ManyToOne
-    @JoinColumn(name = "DestinationAccountID")
-    private UserAccountEntity destinationAccount;
-
     @CreationTimestamp
     @Column(name = "TransactionDate", nullable = false)
     private Timestamp transactionDate;
+
+    @Column(name = "TransactionDescription")
+    private String TransactionDescription;
     public AccountTransactionsEntity() {
     }
     public AccountTransactionsEntity(UUID transactionId, UserAccountEntity account,
-                                     TransactionType transactionType, BigDecimal amount,
-                                     UserAccountEntity destinationAccount) {
+                                     TransactionType transactionType, BigDecimal amount, String transactionDescription) {
         this.transactionId = transactionId;
         this.account = account;
         this.transactionType = transactionType;
         this.amount = amount;
-        this.destinationAccount = destinationAccount;
+        TransactionDescription = transactionDescription;
     }
 
     public UUID getTransactionId() {
@@ -83,16 +81,15 @@ public class AccountTransactionsEntity {
         return this;
     }
 
-    public UserAccountEntity getDestinationAccount() {
-        return destinationAccount;
-    }
-
-    public AccountTransactionsEntity setDestinationAccount(UserAccountEntity destinationAccount) {
-        this.destinationAccount = destinationAccount;
-        return this;
-    }
-
     public Timestamp getTransactionDate() {
         return transactionDate;
+    }
+
+    public String getTransactionDescription() {
+        return TransactionDescription;
+    }
+
+    public void setTransactionDescription(String transactionDescription) {
+        TransactionDescription = transactionDescription;
     }
 }
