@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -20,6 +21,9 @@ public class UserAccountEntity {
 
     @Column(name = "AccountHolderName", nullable = false)
     private String accountHolderName;
+    @Column(name = "CPF", nullable = false, length = 12)
+    @Size(max = 12)
+    private String CPF;
 
     @CreationTimestamp
     @Column(name = "CreatedAt", updatable = false)
@@ -28,6 +32,10 @@ public class UserAccountEntity {
     @UpdateTimestamp
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
+    public UserAccountEntity(){}
+    public UserAccountEntity(String accountHolderName, String CPF, String chavePix){
+
+    }
 
     public UUID getAccountId() {
         return accountId;
@@ -60,5 +68,13 @@ public class UserAccountEntity {
 
     public Timestamp getUpdatedAt() {
         return updatedAt;
+    }
+
+    public String getCPF() {
+        return CPF;
+    }
+
+    public void setCPF(String CPF) {
+        this.CPF = CPF;
     }
 }

@@ -2,6 +2,7 @@ package com.example.bankingsystemspring.controller;
 
 import com.example.bankingsystemspring.common.mapper.UserAccountMapper;
 import com.example.bankingsystemspring.model.UserAccountEntity;
+import com.example.bankingsystemspring.model.request.UserAccountRequest;
 import com.example.bankingsystemspring.model.response.UserAccountResponse;
 import com.example.bankingsystemspring.service.UserAccountService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,12 +34,17 @@ public class UserAccountController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createUserAccount(@RequestBody @NotNull UserAccountEntity userAccountRequest) {
+    public ResponseEntity<Object> createUserAccount(@RequestBody @NotNull UserAccountRequest userAccountRequest) {
         Optional<UserAccountEntity> existingPix = userAccountService.findByPix(userAccountRequest.getChavePix());
+        Optional<UserAccountEntity> existingCPF = userAccountService.findByCPF(userAccountRequest.getCPF());
 
+        if (existingCPF.isPresent()){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Já existe uma conta com este CPF!");
+        }
         if (existingPix.isPresent()){
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("An account with the provided ChavePix already exists.");
+                    .body("Chave PIX indisponível para uso!");
         }
 
         UserAccountEntity userAccount = userAccountService.createUserAccount(userAccountRequest);
