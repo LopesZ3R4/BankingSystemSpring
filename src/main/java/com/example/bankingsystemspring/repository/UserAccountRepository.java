@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface UserAccountRepository extends JpaRepository<UserAccountEntity, UUID> {
     Optional<UserAccountEntity> findByChavePix(String chavePix);
+
+    Optional<UserAccountEntity> findByCPF(String cpf);
 }

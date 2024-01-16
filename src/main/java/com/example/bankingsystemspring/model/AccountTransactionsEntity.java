@@ -42,7 +42,7 @@ public class AccountTransactionsEntity {
         this.account = account;
         this.transactionType = transactionType;
         this.amount = amount;
-        TransactionDescription = transactionDescription;
+        this.TransactionDescription = transactionDescription;
     }
 
     public UUID getTransactionId() {

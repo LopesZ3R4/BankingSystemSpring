@@ -1,6 +1,7 @@
 package com.example.bankingsystemspring.controller;
 
 import com.example.bankingsystemspring.model.UserAccountEntity;
+import com.example.bankingsystemspring.model.request.UserAccountRequest;
 import com.example.bankingsystemspring.service.UserAccountService;
 
 import org.jeasy.random.EasyRandom;
@@ -37,7 +38,7 @@ class UserAccountControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(userAccountController).build();
         UserAccountEntity newAccount = random.nextObject(UserAccountEntity.class);
 
-        Mockito.when(userAccountService.createUserAccount(Mockito.any(UserAccountEntity.class)))
+        Mockito.when(userAccountService.createUserAccount(Mockito.any(UserAccountRequest.class)))
                 .thenReturn(newAccount);
 
         return newAccount;
@@ -57,6 +58,6 @@ class UserAccountControllerTest {
                 .andExpect(jsonPath("$.accountId").isNotEmpty())
                 .andExpect(jsonPath("$.chavePix").value(request.getChavePix()))
                 .andExpect(jsonPath("$.accountHolderName").value(request.getAccountHolderName()));
-        Mockito.verify(userAccountService, Mockito.times(1)).createUserAccount(any(UserAccountEntity.class));
+        Mockito.verify(userAccountService, Mockito.times(1)).createUserAccount(any(UserAccountRequest.class));
     }
 }
