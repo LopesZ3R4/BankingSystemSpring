@@ -26,7 +26,7 @@ O banco de dados é uma instância RDS, onde o Spring se Encarrega de fazer as m
 
 ## Documentação da API
 
-A documentação completa da API está disponível [aqui](http://18.189.140.162:8080/swagger-ui/index.html#/).
+A documentação completa da API está disponível [aqui](http://ec2-18-189-140-162.us-east-2.compute.amazonaws.com:8080/swagger-ui/index.html#/).
 
 # Endpoints da API
 
