@@ -1,11 +1,11 @@
-version: '3.8'
+version: "3.8"
 services:
   mariadb:
-    image: mariadb:latest
+    image: "mariadb:latest"
     environment:
-      MARIADB_DATABASE: bssdb
-      MARIADB_PASSWORD: secret
-      MARIADB_ROOT_PASSWORD: verysecret
-      MARIADB_USER: bssuser
+      MARIADB_DATABASE: "bssdb"
+      MARIADB_PASSWORD: "secret"
+      MARIADB_ROOT_PASSWORD: "verysecret"
+      MARIADB_USER: "bssuser"
     ports:
-      - '3306:3306'
+      - "3306:3306"
