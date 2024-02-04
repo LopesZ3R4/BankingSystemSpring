@@ -24,9 +24,6 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build -x test  # Build your project and skip tests
-        
-      - name: Debug docker-compose.yml
-        run: cat $GITHUB_WORKSPACE/docker-compose.yml
 
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@master
@@ -38,7 +35,7 @@ jobs:
           source: "build/libs/*.jar" 
           target: "/home/${{ secrets.USERNAME }}/BankingSystemSpring"
           
-      - name: Copy docker-compose.yml to EC2
+      - name: Copy docker-compose.yaml to EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -46,8 +43,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cat > /home/${{ secrets.USERNAME }}/BankingSystemSpring/docker-compose.yml <<EOF
-            $(cat docker-compose.yml)
+            cat > /home/${{ secrets.USERNAME }}/BankingSystemSpring/docker-compose.yaml <<EOF
+            $(cat docker-compose.yaml)
             EOF
 
       - name: Restart Spring Boot App
