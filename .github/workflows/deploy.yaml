@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew build -x test  # Build your project and skip tests
         
       - name: Debug docker-compose.yml
-        run: cat ${{ github.workspace }}/docker-compose.yml
+        run: cat $GITHUB_WORKSPACE/docker-compose.yml
 
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@master
