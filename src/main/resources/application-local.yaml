@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:mariadb://bakingsystemspring.cbumgymey1k8.us-east-2.rds.amazonaws.com/bssdb
-    username: admin
+    url: jdbc:mariadb://localhost:3306/bssdb
+    username: bssuser
     password: verysecret
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
